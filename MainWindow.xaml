@@ -1,0 +1,354 @@
+<Window x:Class="LyricsWidget.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:LyricsWidget.Converters"
+        mc:Ignorable="d"
+        Title="Lyrics Widget • made by raikezdev ❤️"
+        Height="360" Width="1380"
+        MinHeight="200" MinWidth="480"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="True"
+        ResizeMode="CanResizeWithGrip"
+        WindowStartupLocation="Manual"
+        FontFamily="pack://application:,,,/Fonts/#Outfit, Outfit, Segoe UI, sans-serif"
+        MouseDown="Window_MouseDown"
+        MouseEnter="Window_MouseEnter"
+        MouseLeave="Window_MouseLeave">
+
+    <Window.Resources>
+        <converters:BytesToImageConverter x:Key="BytesToImageConverter"/>
+        <converters:TimeSpanConverter x:Key="TimeSpanConverter"/>
+
+        <Style x:Key="MiniPillButton" TargetType="Button">
+            <Setter Property="Background" Value="#22FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#1AFFFFFF"/>
+            <Setter Property="Foreground" Value="#EEEEEE"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/#Outfit, Outfit, Segoe UI"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="9,4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                    <Setter Property="Background" Value="#44FFFFFF"/>
+                    <Setter Property="BorderBrush" Value="#44FFFFFF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SwatchButton" TargetType="Button">
+            <Setter Property="Width" Value="22"/>
+            <Setter Property="Height" Value="22"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#40FFFFFF"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="11" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#FFFFFF"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="RootGrid">
+        <Border x:Name="MainRootBorder" Background="#00000000" CornerRadius="12">
+            <Grid Margin="12,4,12,6">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Floating Toolbar -->
+                <Border x:Name="HoverToolbar" Grid.Row="0"
+                        Background="#E6121422" CornerRadius="12" Padding="7,4"
+                        BorderThickness="1" BorderBrush="#35FFFFFF"
+                        Opacity="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Margin="0,0,0,6">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="4" Color="#000000" Opacity="0.85"/>
+                    </Border.Effect>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border x:Name="MiniAlbumArtBorder" Width="20" Height="20" CornerRadius="4" ClipToBounds="True" Background="#25FFFFFF" Margin="2,0,6,0" VerticalAlignment="Center">
+                            <Image x:Name="MiniAlbumArtImage" Stretch="UniformToFill"/>
+                        </Border>
+
+                        <TextBlock x:Name="MiniTrackInfoText" Text="Waiting for music..." FontSize="11" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="0,0,6,0" MaxWidth="140" TextTrimming="CharacterEllipsis"/>
+
+                        <Button x:Name="RescanButton" Style="{StaticResource MiniPillButton}" ToolTip="Rescan active player and reload lyrics" Click="RescanButton_Click" Margin="0,0,4,0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock x:Name="RescanIconText" Text="🔄" FontSize="11" Margin="0,0,3,0"/>
+                                <TextBlock Text="Scan" FontSize="11" FontWeight="SemiBold" Foreground="#38BDF8"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button x:Name="ManualSearchButton" Style="{StaticResource MiniPillButton}" ToolTip="Manually search lyrics by song or artist" Click="ManualSearchButton_Click" Margin="0,0,4,0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="🔍" FontSize="11" Margin="0,0,3,0"/>
+                                <TextBlock Text="Find" FontSize="11" FontWeight="SemiBold" Foreground="#F472B6"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button x:Name="EdgeLightingButton" Style="{StaticResource MiniPillButton}" ToolTip="Toggle Desktop Edge Audio Waves / Ambient Aura" Click="EdgeLightingButton_Click" Margin="0,0,4,0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="🌊" FontSize="11" Margin="0,0,3,0"/>
+                                <TextBlock x:Name="EdgeLightingText" Text="Edge: Aura" FontSize="11" FontWeight="SemiBold" Foreground="#00F5D4"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button x:Name="ColorPickerButton" Style="{StaticResource MiniPillButton}" ToolTip="Pick Badge &amp; Text Color" Click="ColorPickerButton_Click" Margin="0,0,4,0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Ellipse x:Name="CurrentColorDot" Width="9" Height="9" Fill="#FDBA25" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="ColorButtonText" Text="🎨 Color" FontSize="11" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Border Background="#25FFFFFF" CornerRadius="8" Padding="3,2" Margin="0,0,4,0" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button x:Name="SizeDownButton" Content="−" ToolTip="Decrease Font Size" Click="SizeDownButton_Click"
+                                        Background="Transparent" BorderThickness="0" Foreground="#EEEEEE" Cursor="Hand" FontWeight="Bold" FontSize="11" Padding="4,0" FocusVisualStyle="{x:Null}"/>
+                                <TextBlock x:Name="SizeLabelText" Text="56px" FontSize="11" FontWeight="SemiBold" Foreground="#00F5D4" Margin="3,0" VerticalAlignment="Center" ToolTip="Click to reset (56px)" Cursor="Hand" MouseDown="SizeLabelText_MouseDown"/>
+                                <Button x:Name="SizeUpButton" Content="+" ToolTip="Increase Font Size" Click="SizeUpButton_Click"
+                                        Background="Transparent" BorderThickness="0" Foreground="#EEEEEE" Cursor="Hand" FontWeight="Bold" FontSize="11" Padding="4,0" FocusVisualStyle="{x:Null}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Button x:Name="PresetButton" Style="{StaticResource MiniPillButton}" ToolTip="Switch FX Preset Style (12 Styles)" Click="PresetButton_Click" Margin="0,0,4,0">
+                            <TextBlock x:Name="PresetButtonText" Text="🔥 Style" FontSize="11" FontWeight="Bold" Foreground="#FDBA25"/>
+                        </Button>
+
+                        <Button x:Name="RollModeButton" Style="{StaticResource MiniPillButton}" ToolTip="Toggle 3-Line Roller Mode (Words vs Lines)" Click="RollModeButton_Click" Margin="0,0,4,0">
+                            <TextBlock x:Name="RollModeText" Text="🎰 Roll: Words" FontSize="11" FontWeight="SemiBold" Foreground="#FFD166"/>
+                        </Button>
+
+                        <Button x:Name="AnimButton" Style="{StaticResource MiniPillButton}" ToolTip="Toggle Animation Mode (5 Modes)" Click="AnimButton_Click" Margin="0,0,4,0">
+                            <TextBlock x:Name="AnimButtonText" Text="⚡ Pop: Zoom" FontSize="11" FontWeight="SemiBold" Foreground="#00F5D4"/>
+                        </Button>
+
+                        <Button x:Name="ModeToggleButton" Style="{StaticResource MiniPillButton}" ToolTip="Toggle Player Card" Click="ModeToggleButton_Click" Margin="0,0,4,0">
+                            <TextBlock x:Name="ModeToggleIconText" Text="🗖 Player" FontSize="11"/>
+                        </Button>
+
+                        <Border Background="#20FFFFFF" CornerRadius="8" Padding="8,4" Margin="0,0,4,0" VerticalAlignment="Center" ToolTip="Created by raikezdev">
+                            <TextBlock Text="made by raikezdev ❤️" FontSize="11" FontWeight="SemiBold" Foreground="#FF70A0" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <Button x:Name="PinButton" Style="{StaticResource MiniPillButton}" ToolTip="Toggle Always On Top" Click="PinButton_Click" Margin="0,0,4,0">
+                            <TextBlock x:Name="PinIconText" Text="📌" FontSize="11" Foreground="#4ADE80"/>
+                        </Button>
+
+                        <Button x:Name="CloseButton" Style="{StaticResource MiniPillButton}" ToolTip="Close" Click="CloseButton_Click">
+                            <TextBlock Text="✕" FontSize="11"/>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <!-- Color Picker Flyout -->
+                <Border x:Name="ColorPickerPopup" Grid.Row="0" Grid.RowSpan="2"
+                        Background="#F514141E" CornerRadius="10" Padding="10,8"
+                        BorderThickness="1" BorderBrush="#40FFFFFF"
+                        HorizontalAlignment="Center" VerticalAlignment="Top"
+                        Margin="0,38,0,0" Visibility="Collapsed" Panel.ZIndex="100">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="16" ShadowDepth="4" Color="#000000" Opacity="0.95"/>
+                    </Border.Effect>
+                    <StackPanel Orientation="Vertical">
+                        <DockPanel LastChildFill="False" Margin="0,0,0,6">
+                            <TextBlock Text="🎨 Pick Badge &amp; Text Color" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                            <Button Content="✕" DockPanel.Dock="Right" Click="CloseColorPicker_Click"
+                                    Background="Transparent" BorderThickness="0" Foreground="#888888" Cursor="Hand" FontSize="10" Padding="4,0" FocusVisualStyle="{x:Null}"/>
+                        </DockPanel>
+
+                        <WrapPanel MaxWidth="260" Margin="0,2,0,6">
+                            <Button Style="{StaticResource SwatchButton}" Background="#FDBA25" ToolTip="Amber Yellow" Tag="#FDBA25" Click="Swatch_Click"/>
+                            <Button Style="{StaticResource SwatchButton}" Background="#E50914" ToolTip="Supreme Red" Tag="#E50914" Click="Swatch_Click"/>
+                            <Button Style="{StaticResource SwatchButton}" Background="#FF6B35" ToolTip="Sunset Orange" Tag="#FF6B35" Click="Swatch_Click"/>
+                            <Button Style="{StaticResource SwatchButton}" Background="#FF007F" ToolTip="Cyber Pink" Tag="#FF007F" Click="Swatch_Click"/>
+                            <Button Style="{StaticResource SwatchButton}" Background="#A855F7" ToolTip="Ultra Violet" Tag="#A855F7" Click="Swatch_Click"/>
+                            <Button Style="{StaticResource SwatchButton}" Background="#3B82F6" ToolTip="Electric Blue" Tag="#3B82F6" Click="Swatch_Click"/>
+                            <Button Style="{StaticResource SwatchButton}" Background="#00F5D4" ToolTip="Neon Cyan" Tag="#00F5D4" Click="Swatch_Click"/>
+                            <Button Style="{StaticResource SwatchButton}" Background="#10B981" ToolTip="Lime Green" Tag="#10B981" Click="Swatch_Click"/>
+                            <Button Style="{StaticResource SwatchButton}" Background="#FFFFFF" ToolTip="Crisp White" Tag="#FFFFFF" Click="Swatch_Click"/>
+                            <Button Style="{StaticResource SwatchButton}" Background="#1E1E2E" ToolTip="Stealth Dark" Tag="#1E1E2E" Click="Swatch_Click"/>
+                        </WrapPanel>
+
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,2,0,0">
+                            <TextBlock Text="Hex:" FontSize="10" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBox x:Name="HexInputBox" Width="65" Height="20" FontSize="10" Background="#222233" Foreground="#FFFFFF" BorderBrush="#555566" BorderThickness="1" Padding="2,1" VerticalContentAlignment="Center" Text="#FDBA25" KeyDown="HexInputBox_KeyDown"/>
+                            <Button Content="Apply" Style="{StaticResource MiniPillButton}" FontSize="10" Margin="4,0,0,0" Padding="6,2" Click="ApplyHexButton_Click"/>
+                            <Button x:Name="ResetDefaultColorButton" Content="↺ Reset" Style="{StaticResource MiniPillButton}" FontSize="10" Margin="4,0,0,0" Padding="6,2" Click="ResetDefaultColorButton_Click" ToolTip="Reset to preset original color"/>
+                            <Button x:Name="AlbumSyncButton" Content="🌈 Album" Style="{StaticResource MiniPillButton}" FontSize="10" Margin="4,0,0,0" Padding="6,2" Click="AlbumSyncButton_Click"/>
+                            <Button x:Name="NoBoxButton" Content="🔲 No Box" Style="{StaticResource MiniPillButton}" FontSize="10" Margin="4,0,0,0" Padding="6,2" Click="NoBoxButton_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Manual Search Flyout -->
+                <Border x:Name="ManualSearchPopup" Grid.Row="0" Grid.RowSpan="2"
+                        Background="#F5101018" CornerRadius="12" Padding="14,12"
+                        BorderThickness="1" BorderBrush="#504F46E5"
+                        HorizontalAlignment="Center" VerticalAlignment="Top"
+                        Width="440" Margin="0,38,0,0" Visibility="Collapsed" Panel.ZIndex="110">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="24" ShadowDepth="6" Color="#000000" Opacity="0.95"/>
+                    </Border.Effect>
+                    <StackPanel Orientation="Vertical">
+                        <DockPanel LastChildFill="False" Margin="0,0,0,8">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="🔍" FontSize="13" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Find Song Lyrics" FontSize="12" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <Button Content="✕" DockPanel.Dock="Right" Click="CloseManualSearch_Click"
+                                    Background="Transparent" BorderThickness="0" Foreground="#888888" Cursor="Hand" FontSize="11" Padding="4,0" FocusVisualStyle="{x:Null}"/>
+                        </DockPanel>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="ManualSearchInput" Height="28" FontSize="11" Background="#202030" Foreground="#FFFFFF"
+                                     BorderBrush="#40FFFFFF" BorderThickness="1" Padding="8,4" VerticalContentAlignment="Center"
+                                     KeyDown="ManualSearchInput_KeyDown"/>
+                            <Button x:Name="DoSearchButton" Grid.Column="1" Content="Search" Style="{StaticResource MiniPillButton}"
+                                    Background="#4F46E5" Foreground="#FFFFFF" Margin="6,0,0,0" Padding="12,4" Click="DoSearchButton_Click"/>
+                        </Grid>
+
+                        <TextBlock x:Name="ManualSearchStatus" Text="Type track title or artist and press Enter" FontSize="10" Foreground="#8888AA" Margin="0,0,0,6"/>
+
+                        <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel x:Name="ManualSearchResultsPanel"/>
+                        </ScrollViewer>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3-Line Vertical Lyrics Display -->
+                <Grid x:Name="DesktopLyricsView" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" ClipToBounds="False">
+                    <StackPanel x:Name="RollerStackContainer" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                        <StackPanel.RenderTransform>
+                            <TranslateTransform x:Name="RollerContainerTranslate" Y="0"/>
+                        </StackPanel.RenderTransform>
+
+                        <!-- Previous Line Slot -->
+                        <Border x:Name="TopSlotBorder" Margin="0,0,0,4" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Opacity="0.45">
+                            <Border.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform x:Name="TopSlotScale" ScaleX="0.75" ScaleY="0.75"/>
+                                    <RotateTransform x:Name="TopSlotRotate" Angle="-2.0"/>
+                                    <TranslateTransform x:Name="TopSlotTranslate" Y="0"/>
+                                </TransformGroup>
+                            </Border.RenderTransform>
+                            <Grid x:Name="TopSlotGrid" HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="TopSlotText" Text="" FontFamily="pack://application:,,,/Fonts/#Outfit, Outfit, Segoe UI" FontSize="30" FontWeight="Bold" Foreground="#DDD4C0" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="TopSlotEmoji" Grid.Column="1" Text="" FontSize="24" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Active Highlight Line Slot -->
+                        <Border x:Name="CenterSlotBorder" Margin="0,4,0,6" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" CornerRadius="6" Padding="18,6,18,6" Background="#FDBA25">
+                            <Border.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform x:Name="CenterSlotScale" ScaleX="1.0" ScaleY="1.0"/>
+                                    <SkewTransform x:Name="CenterSlotSkew" AngleX="0" AngleY="0"/>
+                                    <RotateTransform x:Name="CenterSlotRotate" Angle="0.0"/>
+                                    <TranslateTransform x:Name="CenterSlotTranslate" X="0" Y="0"/>
+                                </TransformGroup>
+                            </Border.RenderTransform>
+                            <Border.Effect>
+                                <DropShadowEffect x:Name="CenterSlotShadow" Color="#000000" BlurRadius="20" ShadowDepth="3" Opacity="0.95"/>
+                            </Border.Effect>
+                            <Grid x:Name="CenterSlotGrid" HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="CenterSlotText" Text="Waiting..." FontFamily="pack://application:,,,/Fonts/#Outfit, Outfit, Segoe UI" FontSize="56" FontWeight="Black" Foreground="#050508" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Cursor="Hand" ToolTip="Click to retry lyrics search" MouseDown="CenterSlotText_MouseDown"/>
+                                <TextBlock x:Name="CenterSlotEmoji" Grid.Column="1" Text="" FontSize="38" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Next Line Slot -->
+                        <Border x:Name="BottomSlotBorder" Margin="0,2,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Opacity="0.40">
+                            <Border.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform x:Name="BottomSlotScale" ScaleX="0.75" ScaleY="0.75"/>
+                                    <RotateTransform x:Name="BottomSlotRotate" Angle="2.0"/>
+                                    <TranslateTransform x:Name="BottomSlotTranslate" Y="0"/>
+                                </TransformGroup>
+                            </Border.RenderTransform>
+                            <Grid x:Name="BottomSlotGrid" HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="BottomSlotText" Text="" FontFamily="pack://application:,,,/Fonts/#Outfit, Outfit, Segoe UI" FontSize="30" FontWeight="Bold" Foreground="#888899" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="BottomSlotEmoji" Grid.Column="1" Text="" FontSize="24" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Full Card Player View -->
+                <Grid x:Name="CardPlayerView" Grid.Row="1" Visibility="Collapsed" Margin="20,10,20,10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Background="#33141424" CornerRadius="12" Padding="12,10" Margin="0,0,0,10" BorderThickness="1" BorderBrush="#25FFFFFF">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Width="48" Height="48" CornerRadius="8" ClipToBounds="True" Background="#33FFFFFF" Margin="0,0,12,0">
+                                <Image x:Name="CardAlbumArtImage" Stretch="UniformToFill"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock x:Name="CardTrackTitle" Text="Waiting for music..." FontSize="16" FontWeight="Bold" Foreground="#FFFFFF" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="CardArtistName" Text="Play Spotify / YouTube" FontSize="12" Foreground="#8888AA" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="made by raikezdev ❤️" FontSize="10" Foreground="#88FF70A0" Margin="0,3,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" x:Name="CardLyricsScrollViewer"
+                                  VerticalScrollBarVisibility="Hidden"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel x:Name="CardLyricsStackPanel" Margin="0,15,0,45"/>
+                    </ScrollViewer>
+                </Grid>
+
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

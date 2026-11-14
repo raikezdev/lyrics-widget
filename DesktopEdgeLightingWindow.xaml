@@ -1,0 +1,111 @@
+<Window x:Class="LyricsWidget.DesktopEdgeLightingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Desktop Edge Visualizer"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        WindowStartupLocation="Manual"
+        Left="0" Top="0"
+        Width="{x:Static SystemParameters.PrimaryScreenWidth}"
+        Height="{x:Static SystemParameters.PrimaryScreenHeight}"
+        Focusable="False">
+
+    <Grid x:Name="RootOverlayGrid" IsHitTestVisible="False">
+        <Border x:Name="TopEdgeBorder" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="80" Opacity="0.8">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop x:Name="TopEdgeStop0" Color="#6000F5D4" Offset="0.0"/>
+                    <GradientStop x:Name="TopEdgeStop1" Color="#2000F5D4" Offset="0.5"/>
+                    <GradientStop Color="#00000000" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+        <Border x:Name="BottomEdgeBorder" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="100" Opacity="0.85">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0.5,1" EndPoint="0.5,0">
+                    <GradientStop x:Name="BottomEdgeStop0" Color="#8000F5D4" Offset="0.0"/>
+                    <GradientStop x:Name="BottomEdgeStop1" Color="#3000F5D4" Offset="0.55"/>
+                    <GradientStop Color="#00000000" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+        <Border x:Name="LeftEdgeBorder" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="80" Opacity="0.8">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                    <GradientStop x:Name="LeftEdgeStop0" Color="#6000F5D4" Offset="0.0"/>
+                    <GradientStop x:Name="LeftEdgeStop1" Color="#2000F5D4" Offset="0.5"/>
+                    <GradientStop Color="#00000000" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+        <Border x:Name="RightEdgeBorder" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="80" Opacity="0.8">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="1,0.5" EndPoint="0,0.5">
+                    <GradientStop x:Name="RightEdgeStop0" Color="#6000F5D4" Offset="0.0"/>
+                    <GradientStop x:Name="RightEdgeStop1" Color="#2000F5D4" Offset="0.5"/>
+                    <GradientStop Color="#00000000" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+        <Ellipse x:Name="TopLeftBloom" HorizontalAlignment="Left" VerticalAlignment="Top"
+                 Width="220" Height="220" Margin="-60,-60,0,0" Opacity="0.75">
+            <Ellipse.Fill>
+                <RadialGradientBrush Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+                    <GradientStop x:Name="TopLeftBloomStop0" Color="#8000F5D4" Offset="0.0"/>
+                    <GradientStop x:Name="TopLeftBloomStop1" Color="#3000F5D4" Offset="0.5"/>
+                    <GradientStop Color="#00000000" Offset="1.0"/>
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <Ellipse x:Name="TopRightBloom" HorizontalAlignment="Right" VerticalAlignment="Top"
+                 Width="220" Height="220" Margin="0,-60,-60,0" Opacity="0.75">
+            <Ellipse.Fill>
+                <RadialGradientBrush Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+                    <GradientStop x:Name="TopRightBloomStop0" Color="#8000F5D4" Offset="0.0"/>
+                    <GradientStop x:Name="TopRightBloomStop1" Color="#3000F5D4" Offset="0.5"/>
+                    <GradientStop Color="#00000000" Offset="1.0"/>
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <Ellipse x:Name="BottomLeftBloom" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                 Width="280" Height="280" Margin="-80,0,0,-80" Opacity="0.85">
+            <Ellipse.Fill>
+                <RadialGradientBrush Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+                    <GradientStop x:Name="BottomLeftBloomStop0" Color="#9900F5D4" Offset="0.0"/>
+                    <GradientStop x:Name="BottomLeftBloomStop1" Color="#4000F5D4" Offset="0.55"/>
+                    <GradientStop Color="#00000000" Offset="1.0"/>
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <Ellipse x:Name="BottomRightBloom" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                 Width="280" Height="280" Margin="0,0,-80,-80" Opacity="0.85">
+            <Ellipse.Fill>
+                <RadialGradientBrush Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+                    <GradientStop x:Name="BottomRightBloomStop0" Color="#9900F5D4" Offset="0.0"/>
+                    <GradientStop x:Name="BottomRightBloomStop1" Color="#4000F5D4" Offset="0.55"/>
+                    <GradientStop Color="#00000000" Offset="1.0"/>
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <Canvas x:Name="WaveCanvas" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="140" Opacity="0.85">
+            <Path x:Name="WaveBackdropPath" Fill="#2000F5D4" Stroke="Transparent"/>
+            <Path x:Name="WaveMainPath" Stroke="#B000F5D4" StrokeThickness="2.5" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+            <Path x:Name="WaveCrestPath" Stroke="#FFFFFF" StrokeThickness="1.2" Opacity="0.85" StrokeLineJoin="Round"/>
+        </Canvas>
+    </Grid>
+</Window>
