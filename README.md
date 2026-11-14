@@ -1,3 +1,5 @@
+![image alt](https://github.com/raikezdev/lyrics-widget/blob/4fb9f41fc0d3a97eace6c0b4650cb0fd7462ff1a/image.png)
+
 # Lyrics Widget • made by raikezdev ❤️
 
 A hardware-accelerated desktop lyrics widget and audio-reactive edge visualizer for Windows 10 and 11.
