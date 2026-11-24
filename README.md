@@ -1,4 +1,4 @@
-![image alt](https://github.com/raikezdev/lyrics-widget/blob/4fb9f41fc0d3a97eace6c0b4650cb0fd7462ff1a/image.png)
+![image alt](https://github.com/raikezdev/lyrics-widget/blob/95c60669862fd998944a1547c3fdb15da4b2fe00/image.png)
 
 # Lyrics Widget 
 
