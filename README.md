@@ -1,6 +1,6 @@
 ![image alt](https://github.com/raikezdev/lyrics-widget/blob/4fb9f41fc0d3a97eace6c0b4650cb0fd7462ff1a/image.png)
 
-# Lyrics Widget • made by raikezdev ❤️
+# Lyrics Widget 
 
 A hardware-accelerated desktop lyrics widget and audio-reactive edge visualizer for Windows 10 and 11.
 
@@ -130,5 +130,5 @@ The compiled executable will be located in:
 
 ## Credits
 
-- Made by **raikezdev ❤️**
+- Made by **raikezdev**
 - Lyrics provided by [LRCLIB](https://lrclib.net/) and [Lyrics.ovh](https://lyrics.ovh/).
