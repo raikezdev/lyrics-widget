@@ -1,9 +1,7 @@
 
 
 # Lyrics Widget 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/raikezdev/lyrics-widget/main/image.png" alt="Lyrics Widget" />
-</p>
+<img src="https://raw.githubusercontent.com/raikezdev/lyrics-widget/refs/heads/main/image.png" width="700" alt="Lyrics Widget">
 A hardware-accelerated desktop lyrics widget and audio-reactive edge visualizer for Windows 10 and 11.
 
 ---
